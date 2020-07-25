@@ -22,7 +22,11 @@ class Venue(db.Model):
     image_link = db.Column(db.String(500), nullable=False)
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean())
+    seeking_talent = db.Column(db.Boolean(), default=False)
+    past_shows_count = db.Column(db.Integer)
+    upcoming_shows_count = db.Column(db.Integer)
+    past_shows = db.Column(db.PickleType)
+    upcoming_shows = db.Column(db.PickleType)
     shows = db.relationship('Show', backref='venue', lazy='joined', innerjoin=True)
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -43,6 +47,10 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean(), default=False)
     seeking_description = db.Column(db.String())
+    past_shows_count = db.Column(db.Integer)
+    upcoming_shows_count = db.Column(db.Integer)
+    past_shows = db.Column(db.PickleType)
+    upcoming_shows = db.Column(db.PickleType)
     shows = db.relationship('Show', backref='artist', lazy='joined', innerjoin=True)
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -53,5 +61,8 @@ class Show(db.Model):
     date = db.Column(db.DateTime(), nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'),nullable=False )
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'),nullable=False )
-
+    artist_name = db.Column(db.String())
+    venue_name = db.Column(db.String())
+    artist_image_link = db.Column(db.String(500))
+    venue_image_link = db.Column(db.String(500))
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.

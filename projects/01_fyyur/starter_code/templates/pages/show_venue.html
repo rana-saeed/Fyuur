@@ -9,11 +9,14 @@
 		<p class="subtitle">
 			ID: {{ venue.id }}
 		</p>
+		{% if venue.genres %}
 		<div class="genres">
-			{% for genre in venue.genres %}
+			{% set genres = venue.genres.split(",") %}
+			{% for genre in genres %}
 			<span class="genre">{{ genre }}</span>
 			{% endfor %}
 		</div>
+		{% endif %}
 		<p>
 			<i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}
 		</p>
@@ -47,14 +50,15 @@
 	</div>
 </div>
 <section>
+	<!-- {{ venue.upcoming_shows }} -->
 	<h2 class="monospace">{{ venue.upcoming_shows_count }} Upcoming {% if venue.upcoming_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
-	<div class="row">
+	<div class="row" >
 		{%for show in venue.upcoming_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<img src="{{ show.image_link }}" alt="Show Artist Image" />
+				<h5><a href="/artists/{{ show.id }}">{{ show.name }}</a></h5>
+				<h6>{{ show.date.strftime('%Y-%m-%d at %H:%M') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
@@ -66,9 +70,9 @@
 		{%for show in venue.past_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<img src="{{ show.image_link }}" alt="Show Artist Image" />
+				<h5><a href="/artists/{{ show.id }}">{{ show.name }}</a></h5>
+				<h6>{{ show.date.strftime('%Y-%m-%d at %H:%M') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
