@@ -4,6 +4,7 @@ from wtforms import StringField, SelectField, BooleanField, SelectMultipleField,
 from wtforms.validators import DataRequired, AnyOf, URL,  ValidationError, Regexp
 from enum import Enum
 import phonenumbers
+import wtforms.validators as validators
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -137,17 +138,20 @@ class VenueForm(Form):
         'image_link', validators=[DataRequired(), URL()]
     )
     genres = SelectMultipleField(
-        'genres', validators=[DataRequired()],
+        'genres',
         choices=Genre.choices(), coerce=Genre.coerce
     )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[URL(), validators.Optional()]
     )
     website = StringField(
-        'website', validators=[URL()]
+        'website', validators=[URL(), validators.Optional()]
     )
     seeking_talent = BooleanField(
         'seeking_talent'
+    )
+    seeking_description = StringField(
+        'seeking_description'
     )
 
 class ArtistForm(Form):

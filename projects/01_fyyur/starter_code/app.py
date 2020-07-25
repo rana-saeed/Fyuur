@@ -88,6 +88,13 @@ def search_venues():
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
+
+  # remove extra {} inserted in form
+  data = db.session.query(Venue.genres).filter(Venue.id==venue_id).all()
+  genres = data[0].genres.replace("{", "").replace("}", "")
+  db.session.query(Venue).filter(Venue.id==venue_id).update({"genres": genres})
+  db.session.commit()
+
   data = db.session.query(Venue.id,
                           Venue.name,
                           Venue.city,
@@ -124,25 +131,26 @@ def create_venue():
       error = False
       body = {}
 
-      try:                  
+      try:
+        genres = []   
         seeking_talent = False
+
+        if('genres' in request.form):
+          genres=request.form.getlist('genres')
         if('seeking_talent' in request.form):
-          seeking_talent= True
-        
+          seeking_talent= True        
+
         venue = Venue(name= request.form['name'],
                       city= request.form['city'],
                       state= request.form['state'],
                       address= request.form['address'],
                       phone= request.form['phone'],
-                      genres= request.form.getlist('genres'),
+                      genres= genres,
                       image_link= request.form['image_link'],
                       website= request.form['website'],
                       facebook_link= request.form['facebook_link'],
                       seeking_talent= seeking_talent,
-                      past_shows= [],
-                      past_shows_count= 0,
-                      upcoming_shows= [],
-                      upcoming_shows_count= 0)
+                      seeking_description= request.form['seeking_description'])
 
         db.session.add(venue)
         db.session.commit()
@@ -152,6 +160,7 @@ def create_venue():
         print(sys.exc_info)
       finally:
         db.session.close()
+    
       if error:
         flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
       else:
@@ -175,7 +184,8 @@ def edit_venue(venue_id):
                                 Venue.image_link,
                                 Venue.facebook_link,
                                 Venue.website,
-                                Venue.seeking_talent).filter(Venue.id==venue_id).all()
+                                Venue.seeking_talent,
+                                Venue.seeking_description).filter(Venue.id==venue_id).all()
       formEditable = VenueForm(obj=venue[0])
       return render_template('forms/edit_venue.html', form=formEditable, venue=venue[0])
 
@@ -187,11 +197,14 @@ def edit_venue(venue_id):
         db.session.query(Venue).filter(Venue.id==venue_id).update({"state": request.form['state']})
         db.session.query(Venue).filter(Venue.id==venue_id).update({"address": request.form['address']})
         db.session.query(Venue).filter(Venue.id==venue_id).update({"phone": request.form['phone']})
-        db.session.query(Venue).filter(Venue.id==venue_id).update({"genres": request.form.getlist('genres')})
         db.session.query(Venue).filter(Venue.id==venue_id).update({"image_link": request.form['image_link']})
         db.session.query(Venue).filter(Venue.id==venue_id).update({"facebook_link": request.form['facebook_link']})
         db.session.query(Venue).filter(Venue.id==venue_id).update({"website": request.form['website']})
-        
+        db.session.query(Venue).filter(Venue.id==venue_id).update({"seeking_description": request.form['seeking_description']})
+
+        if('genres' in request.form):
+          db.session.query(Venue).filter(Venue.id==venue_id).update({"genres": request.form.getlist('genres')})
+
         if('seeking_talent' in request.form):
           db.session.query(Venue).filter(Venue.id==venue_id).update({"seeking_talent": request.form['seeking_talent']})
         else:
@@ -208,8 +221,8 @@ def edit_venue(venue_id):
         flash('An error occurred. Venue ' + request.form['name'] + ' could not be edited.')
       else:
         flash('Venue ' + request.form['name'] + ' was successfully edited!')
-    # return redirect(url_for('show_venue', venue_id=venue_id))
-    return None
+      return redirect(url_for('show_venue' , venue_id=venue_id))
+    return redirect(url_for('show_venue' , venue_id=venue_id))
 
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
@@ -232,8 +245,7 @@ def delete_venue(venue_id):
     flash('Venue ' + body['name'] + ' was successfully deleted!')
   else:
     flash('Venue ' + body['name'] + ' could not be deleted!')
-  
-  return flask.redirect(flask.url_for('venues'))
+  return redirect(url_for('venues'))
   # TODO: BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
 
