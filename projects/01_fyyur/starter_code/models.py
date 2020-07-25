@@ -10,7 +10,7 @@ db = SQLAlchemy()
 #----------------------------------------------------------------------------#
 
 class Venue(db.Model):
-    __tablename__ = 'venue'
+    __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -23,17 +23,11 @@ class Venue(db.Model):
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean(), default=False)
-    past_shows_count = db.Column(db.Integer)
-    upcoming_shows_count = db.Column(db.Integer)
-    past_shows = db.Column(db.PickleType)
-    upcoming_shows = db.Column(db.PickleType)
-    shows = db.relationship('Show', backref='venue', lazy='joined', innerjoin=True)
-
-    def __repr__(self):
-        return '<Venue {self.id} {self.name} {self.city} {self.state} {self.address} {self.phone} {self.genres}>'
+    seeking_description = db.Column(db.String())
+    shows = db.relationship('Show', backref='venues', lazy='joined', innerjoin=True)
 
 class Artist(db.Model):
-    __tablename__ = 'artist'
+    __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
@@ -46,20 +40,12 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean(), default=False)
     seeking_description = db.Column(db.String())
-    past_shows_count = db.Column(db.Integer)
-    upcoming_shows_count = db.Column(db.Integer)
-    past_shows = db.Column(db.PickleType)
-    upcoming_shows = db.Column(db.PickleType)
-    shows = db.relationship('Show', backref='artist', lazy='joined', innerjoin=True)
+    shows = db.relationship('Show', backref='artists', lazy='joined', innerjoin=True)
 
 class Show(db.Model):
-    __tablename__ = 'show'
+    __tablename__ = 'shows'
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime(), nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'),nullable=False )
-    venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'),nullable=False )
-    artist_name = db.Column(db.String())
-    venue_name = db.Column(db.String())
-    artist_image_link = db.Column(db.String(500))
-    venue_image_link = db.Column(db.String(500))
+    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'),nullable=False )
+    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'),nullable=False )
