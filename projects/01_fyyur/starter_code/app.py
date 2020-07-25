@@ -234,30 +234,32 @@ def edit_venue(venue_id):
         flash('An error occurred. Venue ' + request.form['name'] + ' could not be edited.')
       else:
         flash('Venue ' + request.form['name'] + ' was successfully edited!')
-    return redirect(url_for('show_venue', venue_id=venue_id))
+    # return redirect(url_for('show_venue', venue_id=venue_id))
+    return None
 
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
-  error = False
-  body = {}
+  body={}
+  deleted = True
   try:
-    name = db.session.query(Venue.name).filter_by(id=venue_id).all()
+    name = db.session.query(Venue.name, Venue.id).filter_by(id=venue_id).all()
     body['name'] = name[0]
     
     venue = db.session.query(Venue.id).filter_by(id=venue_id).delete()
     db.session.commit()
   except:
+    deleted = False
     db.session.rollback()
   finally:
     db.session.close()
-
-  if error:
-    flash('An error occurred. Venue ' + body['name'] + ' could not be deleted.')
-  else:
+  
+  if deleted:
     flash('Venue ' + body['name'] + ' was successfully deleted!')
-
-  return render_template('pages/home.html')
+  else:
+    flash('Venue ' + body['name'] + ' could not be deleted!')
+  
+  return flask.redirect(flask.url_for('venues'))
   # TODO: BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
 

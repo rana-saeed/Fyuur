@@ -46,6 +46,9 @@
 		{% endif %}
 	</div>
 	<div class="col-sm-6">
+		<a href="/venues/{{ venue.id }}"><button id="delete-btn" data-id="{{ venue.id }}" class="btn btn-default btn-lg">Delete Venue</button></a>
+	</div>
+	<div class="col-sm-6">
 		<img src="{{ venue.image_link }}" alt="Venue Image" />
 	</div>
 </div>
@@ -78,6 +81,15 @@
 		{% endfor %}
 	</div>
 </section>
+<script>
+	const deleteButton = document.getElementById('delete-btn');
+	deleteButton.onclick = function(e) {
+					const venueId = e.target.dataset['id'];
+                    fetch('/venues/' + venueId, {
+                        method: 'DELETE',
+					})
+                }
+</script>
 
 {% endblock %}
 
