@@ -28,7 +28,6 @@ class Venue(db.Model):
     past_shows = db.Column(db.PickleType)
     upcoming_shows = db.Column(db.PickleType)
     shows = db.relationship('Show', backref='venue', lazy='joined', innerjoin=True)
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
     def __repr__(self):
         return '<Venue {self.id} {self.name} {self.city} {self.state} {self.address} {self.phone} {self.genres}>'
@@ -52,7 +51,6 @@ class Artist(db.Model):
     past_shows = db.Column(db.PickleType)
     upcoming_shows = db.Column(db.PickleType)
     shows = db.relationship('Show', backref='artist', lazy='joined', innerjoin=True)
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 class Show(db.Model):
     __tablename__ = 'show'
@@ -65,4 +63,3 @@ class Show(db.Model):
     venue_name = db.Column(db.String())
     artist_image_link = db.Column(db.String(500))
     venue_image_link = db.Column(db.String(500))
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
