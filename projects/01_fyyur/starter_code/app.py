@@ -99,47 +99,21 @@ def show_venue(venue_id):
                           Venue.facebook_link,
                           Venue.website,
                           Venue.seeking_talent,
-                          Venue.upcoming_shows_count,
-                          Venue.upcoming_shows,
-                          Venue.past_shows_count,
-                          Venue.past_shows).filter(Venue.id==venue_id).all()
+                          Venue.seeking_description).filter(Venue.id==venue_id).all()
 
   upcomingShows = db.session.query(Artist.id,
-                                Artist.name,
-                                Artist.image_link,
-                                Show.date).join(Show).filter(Artist.id == Show.artist_id, Show.venue_id==venue_id, Show.date>datetime.now()).all()
+                                  Artist.name,
+                                  Artist.image_link,
+                                  Show.date).join(Show).filter(Artist.id == Show.artist_id, Show.venue_id==venue_id, Show.date>datetime.now()).all()
 
-  upcomingShowsCount = db.session.query(Artist.id,
-                                Artist.name,
-                                Artist.image_link,
-                                Show.date).join(Show).filter(Artist.id == Show.artist_id, Show.venue_id==venue_id, Show.date>datetime.now()).count()
-  
   pastShows = db.session.query(Artist.id,
                                 Artist.name,
                                 Artist.image_link,
                                 Show.date).join(Show).filter(Artist.id == Show.artist_id, Show.venue_id==venue_id, Show.date<datetime.now()).all()
-  pastShowsCount = db.session.query(Artist.id,
-                                Artist.name,
-                                Artist.image_link,
-                                Show.date).join(Show).filter(Artist.id == Show.artist_id, Show.venue_id==venue_id, Show.date<datetime.now()).count()
-  for show in pastShows:
-    db.session.query(Show).filter(Show.artist_id==show.id).update({"artist_name": show.name})
-    db.session.query(Show).filter(Show.artist_id==show.id).update({"artist_image_link": show.image_link})
-
-  for show in upcomingShows:
-    db.session.query(Show).filter(Show.artist_id==show.id).update({"artist_name": show.name})
-    db.session.query(Show).filter(Show.artist_id==show.id).update({"artist_image_link": show.image_link})
-
-  db.session.query(Show).filter(Show.venue_id==venue_id).update({"venue_name": data[0].name})
-  db.session.query(Show).filter(Show.venue_id==venue_id).update({"venue_image_link": data[0].image_link})
-
-  db.session.query(Venue).filter(Venue.id==venue_id).update({"upcoming_shows_count": upcomingShowsCount})
-  db.session.query(Venue).filter(Venue.id==venue_id).update({"past_shows_count": pastShowsCount})
-  db.session.query(Venue).filter(Venue.id==venue_id).update({"upcoming_shows": upcomingShows})                                                          
-  db.session.query(Venue).filter(Venue.id==venue_id).update({"past_shows": pastShows})
-  db.session.commit()
   
-  return render_template('pages/show_venue.html', venue=data[0])
+  upcomingShowsCount = len(upcomingShows)
+  pastShowsCount = len(pastShows)
+  return render_template('pages/show_venue.html', venue=data[0], upcomingShows=upcomingShows, upcomingShowsCount=upcomingShowsCount, pastShows=pastShows, pastShowsCount=pastShowsCount)
 
 #  Create Venue
 #  ----------------------------------------------------------------
