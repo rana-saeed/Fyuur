@@ -12,8 +12,8 @@ class ShowForm(Form):
     venue_id = StringField(
         'venue_id'
     )
-    start_time = DateTimeField(
-        'start_time',
+    date = DateTimeField(
+        'date',
         validators=[DataRequired()],
         default= datetime.today()
     )
@@ -161,9 +161,6 @@ class ArtistForm(Form):
         'state', validators=[DataRequired()], 
         choices=State.choices(), coerce=State.coerce
     )
-    address = StringField(
-        'address', validators=[DataRequired()]
-    )
     phone = StringField(
         'phone', validators=[DataRequired(), Regexp('\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}', message="Invalid US phone number!")]
     )
@@ -182,5 +179,8 @@ class ArtistForm(Form):
     )
     seeking_venue = BooleanField(
         'seeking_venue'
+    )
+    seeking_description = StringField(
+        'seeking_description'
     )
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
