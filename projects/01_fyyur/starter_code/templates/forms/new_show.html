@@ -3,25 +3,36 @@
 {% block content %}
   <div class="form-wrapper">
     <form method="post" class="form">
+      {{form.csrf_token}}
       <h3 class="form-heading">List a new show</h3>
       <div class="form-group">
         <label for="artist_id">Artist ID</label>
         <small>ID can be found on the Artist's Page</small>
         {{ form.artist_id(class_ = 'form-control', autofocus = true) }}
+        {% if form.artist_id.errors %}
+          {% for error in form.artist_id.errors %}
+            <li style="color: red;">{{ error }} </li>
+          {% endfor %}
+        {% endif %}
       </div>
       <div class="form-group">
         <label for="venue_id">Venue ID</label>
         <small>ID can be found on the Venue's Page</small>
         {{ form.venue_id(class_ = 'form-control', autofocus = true) }}
+        {% if form.venue_id.errors %}
+          {% for error in form.venue_id.errors %}
+            <li style="color: red;">{{ error }} </li>
+          {% endfor %}
+        {% endif %}
       </div>
       <div class="form-group">
           <label for="date">Start Time</label>
           {{ form.date(class_ = 'form-control', placeholder='YYYY-MM-DD HH:MM', autofocus = true) }}
           {% if form.date.errors %}
-                {% for error in form.date.errors %}
-                  <li style="color: red;">{{ error }} </li>
-                {% endfor %}
-              {% endif %}
+            {% for error in form.date.errors %}
+              <li style="color: red;">{{ error }} </li>
+            {% endfor %}
+          {% endif %}
         </div>
       <input type="submit" value="Create Show" class="btn btn-primary btn-lg btn-block">
     </form>

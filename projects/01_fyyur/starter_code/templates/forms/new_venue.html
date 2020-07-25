@@ -79,6 +79,10 @@
         <label for="seeking_talent">Seeking Talent</label>
         {{ form.seeking_talent(class_ = 'form-control', autofocus = true) }}
     </div>
+    <div class="form-group">
+      <label for="seeking_description">Seeking Description</label>
+      {{ form.seeking_description(class_ = 'form-control', placeholder='Tell us what kind of artists you are looking for...', autofocus = true) }}
+    </div>
       <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
